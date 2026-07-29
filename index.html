@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Biblioteca</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet" href="./assets/css/style.css">
+
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script defer src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script defer type="module" src="./assets/js/script.js"></script>
+</head>
+
+<body>
+    <header class="cabecera">
+        <div class="container">
+            <h1>
+                <i class="bi bi-bookshelf"></i>
+                Mi Biblioteca
+            </h1>
+            <p>
+                Sistema de gestión de libros
+            </p>
+        </div>
+    </header>
+
+    <main class="container py-4">
+        <!-- Estadísticas -->
+        <section class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h3 class="mb-4">
+                    <i class="bi bi-bar-chart-fill"></i>
+                    Estadísticas
+                </h3>
+                <div id="mostrar-estadisticas"></div>
+            </div>
+        </section>
+        <!-- Filtros -->
+
+        <section class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h3 class="mb-4">
+                    <i class="bi bi-funnel-fill"></i>
+                    Filtros
+                </h3>
+                <div class="row g-3 align-items-end">
+                    <div class="col-lg-5">
+                        <label class="form-label">
+                            Buscar
+                        </label>
+                        <input type="text" id="texto-busqueda-filtro" class="form-control"
+                            placeholder="Buscar por título o autor">
+                    </div>
+                    <div class="col-lg-2">
+                        <label class="form-label">
+                            Estado
+                        </label>
+                        <select id="estado-filtro" class="form-select">
+                        </select>
+                    </div>
+                    <div class="col-lg-2">
+                        <label class="form-label">
+                            Género
+                        </label>
+                        <select id="genero-filtro" class="form-select">
+                        </select>
+                    </div>
+                    <div class="col-lg-3">
+                        <button id="btn-limpiar-filtros" class="btn btn-outline-secondary w-100">
+                            <i class="bi bi-arrow-clockwise"></i>
+                            Limpiar filtros
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Botón -->
+        <section class="d-flex justify-content-end mb-4">
+            <button class="btn btn-success btn-lg" id="btn-agregar" data-bs-toggle="modal" data-bs-target="#modalLibro">
+                <i class="bi bi-plus-circle"></i>
+                Agregar libro
+            </button>
+        </section>
+
+        <!-- Tabla -->
+        <section class="card shadow-sm">
+            <div class="card-body">
+                <h3 class="mb-4 text-center">
+                    <i class="bi bi-book"></i>
+                    Catálogo de libros
+                </h3>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Título</th>
+                                <th>Estado</th>
+                                <th>Autor</th>
+                                <th>Saga</th>
+                                <th>Género</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cuerpo-tabla-libros">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalLibro">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="titulo-modal">
+                        Agregar libro
+                    </h5>
+                    <button class="btn-close" data-bs-dismiss="modal">
+                    </button>
+                </div>
+                <form id="form-libro">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Título
+                            </label>
+                            <input class="form-control" id="titulo" name="titulo" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Autor
+                            </label>
+                            <input class="form-control" id="autor" name="autor" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Género
+                            </label>
+                            <input class="form-control" id="genero" name="genero" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Saga
+                            </label>
+                            <input class="form-control" id="saga" name="saga" placeholder="Opcional">
+                        </div>
+                        <input type="hidden" id="id-libro" name="id">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-primary" id="btn-guardar-libro">
+                            Guardar libro
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
