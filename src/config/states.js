@@ -1,0 +1,6 @@
+export const STATES = {
+    AVAILABLE: "AVAILABLE",
+    RESERVED: "RESERVED",
+    LOANED: "LOANED",
+    SOLD: "SOLD"
+};

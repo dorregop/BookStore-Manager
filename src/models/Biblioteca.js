@@ -1,4 +1,6 @@
-import { Libro } from "./Libro.js";
+import { Books } from "./Books.js";
+
+// ESTA CLASE SE ELIMINARÁ Y LOS METODOS CAMBIARAN DE LUGAR
 export class Biblioteca {
     constructor(libros = []) {
         this.libros = libros;

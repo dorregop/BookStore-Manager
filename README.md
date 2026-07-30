@@ -1,206 +1,346 @@
-# 📚 Mi Biblioteca
+# 📚 BookStore Manager
 
-Aplicación web desarrollada con JavaScript Vanilla para gestionar una biblioteca personal. Permite agregar, editar, eliminar y administrar el estado de los libros, además de realizar búsquedas y filtros dinámicos.
+> Sistema de gestión para librería desarrollado como proyecto de aprendizaje orientado al desarrollo **Backend con Node.js y Express**.
 
 ---
 
 ## 📖 Descripción
 
-Mi Biblioteca es una aplicación orientada a la gestión de una colección de libros. Fue desarrollada utilizando JavaScript moderno (ES6+) y programación orientada a objetos, manipulando el DOM de forma dinámica y almacenando la información mediante **Local Storage** para mantener los datos entre sesiones.
+**BookStore Manager** es una aplicación web diseñada para administrar una librería mediante una arquitectura escalable y mantenible.
 
-El proyecto fue desarrollado como parte del módulo de JavaScript, aplicando conceptos como:
+El proyecto tiene como objetivo principal reforzar conocimientos en desarrollo Backend utilizando **JavaScript**, **Node.js** y **Express**, aplicando buenas prácticas de diseño de software, separación de responsabilidades y arquitectura por capas.
 
-- Programación Orientada a Objetos.
-- Manipulación del DOM.
-- Módulos ES6.
-- Eventos.
-- Local Storage.
-- Consumo de datos desde un archivo JSON.
-- Bootstrap.
-- SweetAlert2.
+La aplicación comenzará utilizando archivos **JSON** como mecanismo de persistencia para posteriormente evolucionar hacia una base de datos relacional sin necesidad de modificar la lógica de negocio.
+
+El frontend actuará únicamente como cliente de la API REST desarrollada.
 
 ---
 
-# ✨ Funcionalidades
+# 🎯 Objetivos del proyecto
 
-## Gestión de libros
+Este proyecto busca reforzar conocimientos sobre:
 
-- ✅ Agregar nuevos libros.
-- ✅ Editar la información de un libro.
-- ✅ Eliminar libros.
-- ✅ Cambio de estado del libro.
-
-### Estados disponibles
-
-- Disponible
-- Reservado
-- Prestado
-
-Cada estado modifica automáticamente las acciones disponibles para el usuario.
-
----
-
-## 🔄 Gestión de estados
-
-Dependiendo del estado del libro se muestran distintas acciones:
-
-| Estado | Acciones |
-|---------|----------|
-| Disponible | Reservar / Prestar |
-| Reservado | Liberar reserva |
-| Prestado | Devolver |
+* JavaScript (ES6+)
+* Node.js
+* Express
+* Arquitectura REST
+* Arquitectura por capas
+* Programación orientada a objetos
+* Organización de proyectos Backend
+* Separación de responsabilidades
+* CRUD
+* Validaciones
+* Middlewares
+* Manejo de errores
+* Persistencia de datos
+* Consumo de APIs
+* Git y flujo de trabajo profesional
 
 ---
 
-## 🔍 Filtros
+# 🏛 Arquitectura
 
-La aplicación permite combinar múltiples filtros al mismo tiempo.
+El proyecto seguirá una arquitectura por capas.
 
-### Búsqueda por texto
+```text
+Cliente
 
-Busca de forma dinámica mientras el usuario escribe.
+↓
 
-Se puede buscar por:
+Routes
 
-- Título
-- Autor
+↓
 
-### Filtro por estado
+Controllers
 
-- Todos
-- Disponible
-- Reservado
-- Prestado
+↓
 
-### Filtro por género
+Services
 
-Los géneros se cargan automáticamente a partir de los libros existentes.
+↓
 
-### Limpiar filtros
+Repositories
 
-Permite restablecer todos los filtros con un solo botón.
+↓
 
----
+Persistencia (JSON)
 
-## 📊 Estadísticas
+↓
 
-La aplicación muestra información resumida de la biblioteca:
+(Base de datos en futuras versiones)
+```
 
-- Total de libros.
-- Libros disponibles.
-- Libros reservados.
-- Libros prestados.
+Cada capa tendrá una única responsabilidad.
 
-Las estadísticas se actualizan automáticamente cada vez que ocurre un cambio.
-
----
-
-## 💾 Persistencia
-
-La aplicación utiliza **Local Storage** para guardar la información.
-
-Cuando se ejecuta por primera vez:
-
-1. Se cargan los libros desde un archivo JSON.
-2. Se almacenan automáticamente en Local Storage.
-
-En las siguientes ejecuciones:
-
-- Los datos se obtienen directamente desde Local Storage.
+| Capa         | Responsabilidad                          |
+| ------------ | ---------------------------------------- |
+| Routes       | Define las rutas disponibles de la API   |
+| Controllers  | Gestiona las peticiones HTTP             |
+| Services     | Implementa la lógica de negocio          |
+| Repositories | Acceso a los datos                       |
+| Models       | Representación de las entidades          |
+| Middlewares  | Funcionalidades reutilizables de Express |
 
 ---
 
-# 🛠 Tecnologías utilizadas
+# 📦 Modelo del dominio
 
-- HTML5
-- CSS3
-- Bootstrap 5
-- JavaScript ES6+
-- Local Storage
-- SweetAlert2
+El sistema estará compuesto por las siguientes entidades.
+
+## 📚 Book
+
+Representa la información bibliográfica del libro.
+
+Un libro puede tener múltiples ejemplares.
+
+---
+
+## 📖 Copy
+
+Representa una copia física del libro.
+
+Cada ejemplar tendrá un único estado.
+
+Estados posibles:
+
+* AVAILABLE
+* RESERVED
+* LOANED
+* SOLD
+
+---
+
+## 👤 User
+
+Representa a los usuarios del sistema.
+
+Roles iniciales:
+
+* ADMIN
+* CUSTOMER
+
+---
+
+## 📅 Reservation
+
+Representa la reserva de un ejemplar.
+
+---
+
+## 🤝 Loan
+
+Representa el préstamo de un ejemplar.
+
+---
+
+## 🛒 Sale
+
+Representa una compra realizada por un cliente.
+
+---
+
+# 📌 Reglas de negocio
+
+El sistema deberá garantizar las siguientes reglas:
+
+* Un libro puede tener múltiples ejemplares.
+* Cada ejemplar pertenece a un único libro.
+* Cada ejemplar solo puede tener un estado activo.
+* Solo pueden reservarse ejemplares disponibles.
+* Solo pueden prestarse ejemplares disponibles.
+* Solo pueden venderse ejemplares disponibles.
+* Un ejemplar reservado únicamente podrá venderse al usuario que realizó la reserva.
+* Un ejemplar prestado nunca podrá venderse.
+* Los ejemplares vendidos no podrán volver a utilizarse.
+* Solo podrán eliminarse ejemplares disponibles.
+* El stock se calculará automáticamente a partir de los ejemplares existentes.
+
+---
+
+# 🚀 Tecnologías
+
+## Backend
+
+* Node.js
+* Express
+* JavaScript
+* UUID
+* Dotenv
+* Nodemon
+
+## Frontend
+
+* HTML5
+* CSS3
+* JavaScript
+* Framework CSS (por definir)
+
+## Persistencia
+
+Primera versión:
+
+* Archivos JSON
+
+Versiones futuras:
+
+* PostgreSQL
 
 ---
 
 # 📁 Estructura del proyecto
 
-```
-assets/
+```text
+bookstore-manager/
+
 │
-├── css/
-│   └── style.css
-│
-├── js/
-│   ├── dom/
-│   ├── eventos/
+
+├── src/
+
+│   ├── config/
+
+│   ├── controllers/
+
+│   ├── data/
+
+│   ├── middlewares/
+
 │   ├── models/
-│   ├── servicios/
+
+│   ├── repositories/
+
+│   ├── routes/
+
+│   ├── services/
+
 │   ├── utils/
-│   └── script.js
+
+│   ├── app.js
+
+│   └── server.js
+
 │
-└── db/
-    └── libros.json
+
+├── public/
+
+├── docs/
+
+├── package.json
+
+├── README.md
+
+└── .env
 ```
 
 ---
 
-# 🧩 Arquitectura
+# 🌐 API REST
 
-El proyecto se encuentra dividido por responsabilidades:
+La API expondrá recursos para:
 
-### Models
+* Books
+* Copies
+* Users
+* Reservations
+* Loans
+* Sales
 
-Contiene las clases principales.
-
-- Libro
-- Biblioteca
-
----
-
-### DOM
-
-Responsable del renderizado dinámico de la interfaz.
+Los endpoints serán implementados progresivamente durante el desarrollo.
 
 ---
 
-### Eventos
+# 🗺 Roadmap
 
-Gestiona:
+## Sprint 0
 
-- Eventos del formulario.
-- Eventos de la tabla.
-- Filtros.
-- Botones de acción.
-
----
-
-### Servicios
-
-Obtención de datos desde el archivo JSON.
+* Definición del dominio
+* Diseño de arquitectura
+* Organización del proyecto
+* Configuración de Express
+* Diseño de la API
 
 ---
 
-### Utils
+## Sprint 1
 
-Funciones auxiliares utilizadas por la aplicación.
+Gestión de libros
 
----
-
-# 🚀 Cómo ejecutar el proyecto
-
-1. Clonar el repositorio.
-
-```bash
-git clone https://github.com/usuario/mi-biblioteca.git
-```
-
-2. Abrir el proyecto con Visual Studio Code.
-
-3. Ejecutar utilizando **Live Server**.
+* Listar libros
+* Obtener libro por ID
+* Crear libro
+* Editar libro
+* Eliminar libro
 
 ---
 
-# 👨‍💻 Autor
+## Sprint 2
 
-Desarrollado por **Diego Andrés Orrego Pantoja**.
+Gestión de ejemplares
 
-Proyecto realizado como práctica del módulo de JavaScript, aplicando conceptos de programación orientada a objetos, manipulación del DOM, eventos, persistencia de datos y consumo de información desde archivos JSON.
+* Alta de ejemplares
+* Baja de ejemplares
+* Control de stock
+
+---
+
+## Sprint 3
+
+Gestión de usuarios
+
+---
+
+## Sprint 4
+
+Reservas
+
+---
+
+## Sprint 5
+
+Préstamos
+
+---
+
+## Sprint 6
+
+Carrito y ventas
+
+---
+
+## Sprint 7
+
+Autenticación mediante JWT
+
+---
+
+## Sprint 8
+
+Migración a PostgreSQL
+
+---
+
+# 📌 Objetivos de calidad
+
+Al finalizar el proyecto se espera que:
+
+* El código sea modular.
+* Cada capa tenga una única responsabilidad.
+* La lógica de negocio sea independiente de la persistencia.
+* La API siga principios REST.
+* El proyecto pueda escalar fácilmente.
+* Sea posible reemplazar JSON por una base de datos sin modificar la lógica de negocio.
+
+---
+
+# 📚 Aprendizajes esperados
+
+Este proyecto está pensado como una evolución progresiva hacia un backend profesional.
+
+Más que desarrollar una aplicación completa, el objetivo es comprender cómo diseñar, estructurar y mantener una API escalable aplicando buenas prácticas de desarrollo.
+
+Cada nueva funcionalidad será incorporada mediante iteraciones, permitiendo que el proyecto crezca de forma ordenada y preparada para futuras mejoras.
+
+---
+
+# 📄 Licencia
+
+Proyecto desarrollado con fines educativos y de aprendizaje.
