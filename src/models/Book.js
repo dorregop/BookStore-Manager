@@ -1,14 +1,11 @@
-
-export class Books {
-
-    constructor({ title, author, category, saga, price, id = crypto.randomUUID() }) {
+import { v4 as uuidv4 } from "uuid";
+export class Book {
+    constructor({ title, author, category, saga, price, id = uuidv4() }) {
         this.title = title;
         this.author = author;
         this.category = category;
         this.saga = saga;
-        this.isbn = isbn;
         this.price = price;
-        this.description = description
         this.id = id;
     }
 
@@ -22,15 +19,11 @@ export class Books {
         if (category) {
             this.category = category;
         }
+        if (saga !== undefined) {
             this.saga = saga;
-        if (isbn) {
-            this.isbn = isbn;
         }
-        if (price){
+        if (price !== undefined && price > 0) {
             this.price = price;
-        }
-        if (description) {
-            this.description = description
         }
     }
 }

@@ -1,5 +1,11 @@
 export class Loan {
-    constructor({ userId, copyId, loanDate = new Date(), returnDate = null, id = crypto.randomUUID() }) {
+    constructor({
+        userId,
+        copyId,
+        loanDate = new Date(),
+        returnDate = null,
+        id = crypto.randomUUID()
+    }) {
         this.id = id;
         this.userId = userId;
         this.copyId = copyId;
@@ -7,7 +13,19 @@ export class Loan {
         this.returnDate = returnDate;
     }
 
-    returnCopy(){
+    returnCopy() {
+        if (this.returnDate !== null) {
+            return false;
+        }
+        this.returnDate = new Date();
+        return true;
+    }
 
+    isActive() {
+        return this.returnDate === null;
+    }
+
+    isReturned() {
+        return this.returnDate !== null;
     }
 }

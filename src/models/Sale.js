@@ -1,9 +1,25 @@
+import { v4 as uuidv4 } from "uuid";
 export class Sale {
-    constructor({ customerId, items = [], total = 0, saleDate = new Date(), id = crypto.randomUUID() }) {
+    constructor({ customerId, items = [], saleDate = new Date(), id = uuidv4() }) {
         this.id = id;
         this.customerId = customerId;
         this.items = items;
-        this.total = total;
         this.saleDate = saleDate;
+    }
+
+    addItem(item) {
+        if (!item.copyId || item.price === undefined) {
+            return false;
+        }
+        this.items.push(item);
+        return true;
+    }
+
+    getTotal() {
+        let total = 0;
+        this.items.forEach(item => {
+            total += item.price;
+        });
+        return total;
     }
 }

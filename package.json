@@ -4,19 +4,13 @@
   "description": "Aplicación web desarrollada con JavaScript Vanilla para gestionar una biblioteca personal. Permite agregar, editar, eliminar y administrar el estado de los libros, además de realizar búsquedas y filtros dinámicos.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/dorregop/Sistema-Biblioteca.git"
+    "dev": "node --watch server.js",
+    "start": "node server.js"
   },
   "keywords": [],
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/dorregop/Sistema-Biblioteca/issues"
-  },
-  "homepage": "https://github.com/dorregop/Sistema-Biblioteca#readme",
+  "type": "module",
   "dependencies": {
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "uuid": "^14.0.1"
   }
 }

@@ -1,10 +1,11 @@
-import { STATES, ROLES, HTTP_CODES } from "../config/index.js";
-export class copy {
+import { STATES } from "../config/index.js";
+import { v4 as uuidv4 } from "uuid";
+export class Copy {
 
-    constructor({ idBook, state, createdAt = new Date(), id = crypto.randomUUID() }) {
+    constructor({ bookId, state, createdAt = new Date(), id = uuidv4() }) {
         this.id = id;
         this.bookId = bookId;
-        this.state = state;
+        this.state = STATES.AVAILABLE;
         this.createdAt = createdAt;
     }
 
@@ -36,20 +37,19 @@ export class copy {
         return false;
     }
 
-    isAvailable(){
-
+    isAvailable() {
+        return this.state === STATES.AVAILABLE;
     }
 
-    isReserved(){
-
+    isReserved() {
+        return this.state === STATES.RESERVED;
     }
 
-    isLoaned(){
-
+    isLoaned() {
+        return this.state === STATES.LOANED;
     }
 
-    isSold(){
-
+    isSold() {
+        return this.state === STATES.SOLD;
     }
 }
-
