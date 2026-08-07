@@ -1,48 +1,46 @@
-import { Book } from "../models/Book.js";
-export class bookService {
-    createBook(book) {
-        this.libros.unshift(libro);
-        this.guardarEnLocalStorage();
+import { BookRepository } from "../repositories/books.repository.js";
+export class BooksService {
+    constructor() {
+        this.bookRepository = new BookRepository();
     }
 
-    getBooks(){
-
+    async getBooks() {
+        return this.bookRepository.findAll();
     }
 
-    getBookById(id) {
-        return this.libros.find(
-            libro => libro.id === id
-        );
-    }
-
-    deleteBook(id) {
-        this.libros = this.libros.filter(
-            libro => libro.id !== id
-        );
-        this.guardarEnLocalStorage();
-    }
-
-    updateBook(id, datos) {
-        const libro = this.buscarLibro(id);
-        if (libro) {
-            libro.actualizarDatos(datos);
-            this.guardarEnLocalStorage();
+    async getBookById(id) {
+        const book = await this.bookRepository.findById(id);
+        if (!book) {
+            throw new Error("Book not found");
         }
+        return book;
     }
 
-    saveBook() {
-        localStorage.setItem(
-            "biblioteca",
-            JSON.stringify(this.libros)
-        );
+    async createBook(book) {
+        if (!book) {
+            throw new Error("Book data is required");
+        }
+        const newBook = await this.bookRepository.create(book);
+        return newBook;
     }
 
-    loadBook() {
-        const datos = localStorage.getItem("biblioteca");
+    //pendiente por copias de los libros
+    async deleteBook(id) {
+        const book = await this.bookRepository.findById(id);
+        if (!book) {
+            throw new Error("Book not found");
+        }
+        await this.bookRepository.delete(id);
+    }
+
+    async updateBook(id, datos) {
+        const book = await this.bookRepository.findById(id);
+        if (!book) {
+            throw new Error("Book not found");
+        }
         if (!datos) {
-            return;
+            throw new Error("Data is required to update the book");
         }
-        const libros = JSON.parse(datos);
-        this.libros = libros.map(libro => new Libro(libro));
+        return this.bookRepository.update(id, datos);
     }
 }

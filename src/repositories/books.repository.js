@@ -8,46 +8,52 @@ const __dirname = path.dirname(__filename);
 
 const BOOKS_FILE = path.join(__dirname, "../data/books.json");
 
-export class BooksRepository {
+export class BookRepository {
     async findAll() {
         const data = await fs.readFile(BOOKS_FILE, "utf-8");
         const books = JSON.parse(data);
         return books.map(book => new Book(book));
     }
 
-    async findById(id){
+    async findById(id) {
         const books = await this.findAll();
         const book = books.find(book => book.id === id);
         return book;
     }
 
-    createBook(book){
+    async create(book) {
         const newBook = new Book(book);
-        return this.findAll().then(books => {
-            books.unshift(newBook);
-            return fs.writeFile(BOOKS_FILE, JSON.stringify(books, null, 2)).then(() => newBook);
-        });
+        const books = await this.findAll();
+        books.unshift(newBook);
+        await fs.writeFile(
+            BOOKS_FILE,
+            JSON.stringify(books, null, 2)
+        );
+        return newBook;
     }
 
-    updateBook(id, data){
-        return this.findAll().then(books => {
-            const bookIndex = books.findIndex(book => book.id === id);
-            if (bookIndex === -1) {
-                throw new Error("Book not found");
-            }
-            books[bookIndex].update(data);
-            return fs.writeFile(BOOKS_FILE, JSON.stringify(books, null, 2)).then(() => books[bookIndex]);
-        });
+    async update(id, data) {
+        const books = await this.findAll();
+        const book = books.find(book => book.id === id);
+        if (!book) {
+            throw new Error("Book not found");
+        }
+        book.update(data);
+        await fs.writeFile(BOOKS_FILE, JSON.stringify(books, null, 2));
+        return book;
     }
 
-    deleteBook(id){
-        return this.findAll().then(books => {
-            const bookIndex = books.findIndex(book => book.id === id);
-            if (bookIndex === -1) {
-                throw new Error("Book not found");
-            }
-            books.splice(bookIndex, 1);
-            return fs.writeFile(BOOKS_FILE, JSON.stringify(books, null, 2));
-        });
+    async delete(id) {
+        const books = await this.findAll();
+        const book = books.find(book => book.id === id);
+        if (!book) {
+            throw new Error("Book not found");
+        }
+        books.splice(books.indexOf(book), 1);
+        await fs.writeFile(
+            BOOKS_FILE,
+            JSON.stringify(books, null, 2)
+        );
+        return books;
     }
 }

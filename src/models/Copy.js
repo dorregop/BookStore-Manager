@@ -1,7 +1,6 @@
 import { STATES } from "../config/index.js";
 import { v4 as uuidv4 } from "uuid";
 export class Copy {
-
     constructor({ bookId, state, createdAt = new Date(), id = uuidv4() }) {
         this.id = id;
         this.bookId = bookId;
@@ -13,7 +12,6 @@ export class Copy {
         if (newState === this.state) {
             return false;
         }
-
         switch (this.state) {
             case STATES.AVAILABLE:
                 if (newState === STATES.RESERVED || newState === STATES.LOANED || newState === STATES.SOLD) {
