@@ -2,7 +2,7 @@
   "name": "bookstore-manager",
   "version": "1.0.0",
   "description": "Aplicación web desarrollada con JavaScript Vanilla para gestionar una biblioteca personal. Permite agregar, editar, eliminar y administrar el estado de los libros, además de realizar búsquedas y filtros dinámicos.",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "dev": "node --watch server.js",
     "start": "node server.js"

@@ -46,4 +46,15 @@ export class CopyRepository {
         await fs.writeFile(COPIES_FILE, JSON.stringify(updatedCopies, null, 2));
         return updatedCopies;
     }
+
+    async update(copy) {
+        const copies = await this.findAll();
+        const index = copies.findIndex(c => c.id === copy.id);
+        if (index === -1) {
+            throw new Error("Copy not found");
+        }
+        copies[index] = copy;
+        await fs.writeFile(COPIES_FILE, JSON.stringify(copies, null, 2));
+        return copy;
+    }
 }

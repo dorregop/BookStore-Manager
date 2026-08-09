@@ -1,11 +1,5 @@
 export class Loan {
-    constructor({
-        userId,
-        copyId,
-        loanDate = new Date(),
-        returnDate = null,
-        id = crypto.randomUUID()
-    }) {
+    constructor({ userId, copyId, loanDate = new Date(), returnDate = null, id = crypto.randomUUID() }) {
         this.id = id;
         this.userId = userId;
         this.copyId = copyId;
