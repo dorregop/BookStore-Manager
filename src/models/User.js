@@ -1,7 +1,5 @@
-import { ROLES } from "../config/index.js";
-import { v4 as uuidv4 } from "uuid";
 export class User {
-    constructor({ firstName, lastName, email, role = ROLES.CUSTOMER, id = uuidv4() }) {
+    constructor({ firstName, lastName, email, role, id}) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;

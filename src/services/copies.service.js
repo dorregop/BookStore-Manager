@@ -7,12 +7,14 @@ export class CopiesService {
         this.bookRepository = new BookRepository();
         this.copyStateRepository = new CopyStateRepository();
     }
-
     async getCopies() {
         return this.copyRepository.findAll();
     }
 
     async getCopyById(id) {
+        if (!id) {
+            throw new Error("Copy id is required");
+        }
         const copy = await this.copyRepository.findById(id);
         if (!copy) {
             throw new Error("Copy not found");
@@ -21,6 +23,9 @@ export class CopiesService {
     }
 
     async getCopiesByBookId(bookId) {
+        if (!bookId) {
+            throw new Error("Book id is required");
+        }
         const book = await this.bookRepository.findById(bookId);
         if (!book) {
             throw new Error("Book not found");
@@ -36,7 +41,8 @@ export class CopiesService {
         if (!book) {
             throw new Error("Book not found");
         }
-        const availableState = await this.copyStateRepository.findByName("Available");
+        const availableState =
+            await this.copyStateRepository.findByName("Available");
         if (!availableState) {
             throw new Error("Available state not found");
         }
@@ -47,32 +53,58 @@ export class CopiesService {
         return this.copyRepository.create(copy);
     }
 
-    async updateCopy(copy) {
-        if (!copy) {
+    async updateCopy(copyData) {
+        if (!copyData) {
             throw new Error("Copy data is required");
         }
-        const existingCopy = await this.copyRepository.findById(copy.id);
-        if (!existingCopy) {
+        const copy = await this.copyRepository.findById(copyData.id);
+        if (!copy) {
             throw new Error("Copy not found");
         }
-
-        if (copy.bookId) {
-            const book = await this.bookRepository.findById(copy.bookId);
+        // Cambiar libro
+        if (
+            copyData.bookId !== undefined &&
+            copyData.bookId !== copy.bookId
+        ) {
+            const book = await this.bookRepository.findById(copyData.bookId);
             if (!book) {
                 throw new Error("Book not found");
             }
+            copy.bookId = copyData.bookId;
         }
-
-        if (copy.stateId) {
-            const state = await this.copyStateRepository.findById(copy.stateId);
-            if (!state) {
-                throw new Error("Copy state not found");
+        // Cambiar estado
+        if (
+            copyData.stateId !== undefined &&
+            copyData.stateId !== copy.stateId
+        ) {
+            const currentState =
+                await this.copyStateRepository.findById(copy.stateId);
+            const newState =
+                await this.copyStateRepository.findById(copyData.stateId);
+            if (!currentState) {
+                throw new Error("Current copy state not found");
             }
+            if (!newState) {
+                throw new Error("New copy state not found");
+            }
+            const canChange = this.isValidStateTransition(
+                currentState.name,
+                newState.name
+            );
+            if (!canChange) {
+                throw new Error(
+                    `Cannot change copy state from ${currentState.name} to ${newState.name}`
+                );
+            }
+            copy.stateId = newState.id;
         }
         return this.copyRepository.update(copy);
     }
 
     async deleteCopy(id) {
+        if (!id) {
+            throw new Error("Copy id is required");
+        }
         const copy = await this.copyRepository.findById(id);
         if (!copy) {
             throw new Error("Copy not found");
@@ -87,6 +119,16 @@ export class CopiesService {
                 "Cannot delete a copy that is not available"
             );
         }
-        return this.copyRepository.deleteCopy(id);
+        return this.copyRepository.delete(id);
+    }
+
+    isValidStateTransition(currentState, newState) {
+        const transitions = {
+            Available: ["Reserved", "Loaned", "Sold"],
+            Reserved: ["Available", "Sold"],
+            Loaned: ["Available"],
+            Sold: []
+        };
+        return transitions[currentState]?.includes(newState) ?? false;
     }
 }

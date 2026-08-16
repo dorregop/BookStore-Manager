@@ -1,5 +1,4 @@
 import { CopiesService } from "../services/copies.service.js";
-
 export class CopiesController {
     constructor() {
         this.copiesService = new CopiesService();

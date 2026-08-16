@@ -1,43 +1,42 @@
+import { pool } from "../config/config.js";
 import { User } from "../models/user.model.js";
-import fs from "fs/promises";
-import path from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const USERS_FILE = path.join(__dirname, "../data/users.json");
-
 export class UserRepository {
     async findAll() {
-        const data = await fs.readFile(USERS_FILE, "utf-8");
-        const users = JSON.parse(data);
-        return users.map(user => new User(user));
+        const result = await pool.query(`SELECT id, name, email, password, role_id AS "roleId", 
+            created_at AS "createdAt", updated_at AS "updatedAt" FROM users;`);
+        return result.rows.map(row => new User(row));
     }
 
     async findById(id) {
-        const users = await this.findAll();
-        const user = users.find(user => user.id === id);
-        return user;
+        const result = await pool.query(`SELECT id, name, email, password, role_id AS "roleId",
+            created_at AS "createdAt", updated_at AS "updatedAt" FROM users WHERE id = $1;`, [id]);
+        return result.rows.length > 0 ? new User(result.rows[0]) : undefined;
     }
 
     async create(user) {
-        const newUser = new User(user);
-        const users = await this.findAll();
-        users.push(newUser);
-        await fs.writeFile(
-            USERS_FILE,
-            JSON.stringify(users, null, 2)
-        );
-        return newUser;
+        const result = await pool.query(`INSERT INTO users (name, email, password, role_id) VALUES ($1, $2, $3, $4) 
+            RETURNING id, name, email, role_id AS "roleId", created_at AS "createdAt", updated_at AS "updatedAt";`, 
+            [user.name, user.email, user.password, user.roleId]);
+        return new User(result.rows[0]);
     }
 
-    async update(user, data) {
-        user.update(data);
-        return user;
+    async update(id, data) {
+        const result = await pool.query(`UPDATE users  SET name = $2, email = $3, password = $4, role_id = $5, 
+            updated_at = CURRENT_TIMESTAMP WHERE id = $1
+            RETURNING id, name, email, role_id AS "roleId", created_at AS "createdAt", updated_at AS "updatedAt";`, 
+            [id, data.name, data.email, data.password, data.roleId]);
+        if (result.rows.length === 0) {
+            throw new Error("User not found");
+        }
+        return new User(result.rows[0]);
     }
 
-    async changeRole(user, newRole) {
-        const result = user.changeRole(newRole);
-        return result;
+    async delete(id) {
+        const result = await pool.query(`DELETE FROM users WHERE id = $1 
+            RETURNING id, name, email, role_id AS "roleId", created_at AS "createdAt", updated_at AS "updatedAt";`, [id]);
+        if (result.rows.length === 0) {
+            throw new Error("User not found");
+        }
+        return new User(result.rows[0]);
     }
 }

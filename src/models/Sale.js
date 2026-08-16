@@ -1,6 +1,5 @@
-import { v4 as uuidv4 } from "uuid";
 export class Sale {
-    constructor({ customerId, items = [], saleDate = new Date(), id = uuidv4() }) {
+    constructor({ customerId, items = [], saleDate = new Date(), id }) {
         this.id = id;
         this.customerId = customerId;
         this.items = items;

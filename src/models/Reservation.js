@@ -1,7 +1,5 @@
-import { RESERVATION_STATES } from "../config/index.js";
-import { v4 as uuidv4 } from "uuid";
 export class Reservation {
-    constructor({ userId, copyId, reservationDate = new Date(), status = RESERVATION_STATES.ACTIVE, id = uuidv4() }) {
+    constructor({ userId, copyId, reservationDate = new Date(), status, id }) {
         this.id = id;
         this.userId = userId;
         this.copyId = copyId;

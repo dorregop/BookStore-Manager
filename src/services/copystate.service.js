@@ -5,11 +5,11 @@ export class CopyStateService {
         this.copyStateRepository = new CopyStateRepository();
     }
 
-    async getCopySates() {
+    async getCopyStates() {
         return this.copyStateRepository.findAll();
     }
 
-    async getCopySatesById(id) {
+    async getCopyStatesById(id) {
         if (!id) {
             throw new Error("Copy State id is required")
         }
