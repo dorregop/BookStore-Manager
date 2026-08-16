@@ -1,59 +1,41 @@
-import fs from "fs/promises";
-import path from "path";
-import { fileURLToPath } from "url";
+import { pool } from "../config/config.js";
 import { Book } from "../models/Book.js";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const BOOKS_FILE = path.join(__dirname, "../data/books.json");
-
 export class BookRepository {
     async findAll() {
-        const data = await fs.readFile(BOOKS_FILE, "utf-8");
-        const books = JSON.parse(data);
-        return books.map(book => new Book(book));
+        const result = await pool.query(`SELECT id, title, author, category_id AS "categoryId", 
+            saga, price, created_at AS "createdAt", updated_at AS "updatedAt" FROM book;`);
+        return result.rows.map(row => new Book(row));
     }
 
     async findById(id) {
-        const books = await this.findAll();
-        const book = books.find(book => book.id === id);
-        return book;
+        const result = await pool.query(`SELECT id, title, author, category_id AS "categoryId", 
+            saga, price, created_at AS "createdAt", updated_at AS "updatedAt" FROM book WHERE id = $1;`, [id]);
+        return result.rows.length > 0 ? new Book(result.rows[0]) : undefined;
     }
 
     async create(book) {
-        const newBook = new Book(book);
-        const books = await this.findAll();
-        books.unshift(newBook);
-        await fs.writeFile(
-            BOOKS_FILE,
-            JSON.stringify(books, null, 2)
-        );
-        return newBook;
+        const result = await pool.query(`INSERT INTO book (title, author, category_id, saga, price) VALUES ($1, $2, $3, $4, $5) 
+            RETURNING id, title, author, category_id AS "categoryId", saga, price, created_at AS "createdAt";`,
+            [book.title, book.author, book.categoryId, book.saga, book.price]);
+        return new Book(result.rows[0]);
     }
 
     async update(id, data) {
-        const books = await this.findAll();
-        const book = books.find(book => book.id === id);
-        if (!book) {
+        const result = await pool.query(`UPDATE book SET title = $2, author = $3, category_id = $4, saga = $5, price = $6
+            WHERE id = $1 RETURNING id, title, author, category_id AS "categoryId", saga, price, created_at AS "createdAt", updated_at 
+            AS "updatedAt";`, [id, data.title, data.author, data.categoryId, data.saga, data.price]);
+        if (result.rows.length === 0) {
             throw new Error("Book not found");
         }
-        book.update(data);
-        await fs.writeFile(BOOKS_FILE, JSON.stringify(books, null, 2));
-        return book;
+        return new Book(result.rows[0]);
     }
 
     async delete(id) {
-        const books = await this.findAll();
-        const book = books.find(book => book.id === id);
-        if (!book) {
+        const result = await pool.query(`DELETE FROM book WHERE id = $1 RETURNING 
+        id, title, author, category_id as "categoryId", saga, price, created_at AS "createdAt", updated_at AS "updatedAt"`, [id]);
+        if (result.rows.length === 0) {
             throw new Error("Book not found");
         }
-        books.splice(books.indexOf(book), 1);
-        await fs.writeFile(
-            BOOKS_FILE,
-            JSON.stringify(books, null, 2)
-        );
-        return books;
+        return new Book(result.rows[0]);
     }
 }

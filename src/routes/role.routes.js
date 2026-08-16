@@ -4,20 +4,19 @@ import express from "express";
 const router = express.Router();
 const roleController = new RoleController();
 
-// find all categories
+// FindAll
 router.get("/", roleController.getRoles);
 
-// find categories by id
-router.get("/id/:id", roleController.getRoleById)
+// FindById
+router.get("/:id", roleController.getRoleById)
 
-// create category
+// Create
 router.post("/", roleController.createRole);
 
-// update category
+// Update
 router.put("/:id", roleController.updateRole);
 
-// delete category
+// Delete
 router.delete("/:id", roleController.deleteRole);
 
 export default router;
-

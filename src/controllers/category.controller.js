@@ -1,5 +1,4 @@
 import { CategoryService } from "../services/category.service.js";
-
 export class CategoryController {
     constructor() {
         this.categoryService = new CategoryService();

@@ -1,4 +1,4 @@
-import { RoleService } from "../services/category.service.js";
+import { RoleService } from "../services/role.service.js";
 
 export class RoleController {
     constructor() {
@@ -13,7 +13,7 @@ export class RoleController {
 
     async getRoles(req, res) {
         const roles = await this.roleService.getRoles();
-        res.status(200).json(categories);
+        res.status(200).json(roles);
     }
 
     async getRoleById(req, res) {

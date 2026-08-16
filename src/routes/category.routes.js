@@ -4,19 +4,19 @@ import express from "express";
 const router = express.Router();
 const categoryController = new CategoryController();
 
-// find all categories
+// Find All
 router.get("/", categoryController.getCategories);
 
-// find categories by id
+// FindById
 router.get("/:id", categoryController.getCategoryById)
 
-// create category
+// Create
 router.post("/", categoryController.createCategory);
 
-// update category
+// Update
 router.put("/:id", categoryController.updateCategory);
 
-// delete category
+// Delete
 router.delete("/:id", categoryController.deleteCategory);
 
 export default router;

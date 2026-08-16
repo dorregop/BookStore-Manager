@@ -1,28 +1,29 @@
-import { v4 as uuidv4 } from "uuid";
 export class Book {
-    constructor({ title, author, category, saga, price, id = uuidv4() }) {
+    constructor({ id, title, author, categoryId, saga, price, createdAt, updatedAt }) {
+        this.id = id;
         this.title = title;
         this.author = author;
-        this.category = category;
+        this.categoryId = categoryId;
         this.saga = saga;
         this.price = price;
-        this.id = id;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
-    update({ title, author, category, saga, price }) {
-        if (title) {
+    update({ title, author, categoryId, saga, price }) {
+        if (title !== undefined) {
             this.title = title;
         }
-        if (author) {
+        if (author !== undefined) {
             this.author = author;
         }
-        if (category) {
-            this.category = category;
+        if (categoryId !== undefined) {
+            this.categoryId = categoryId;
         }
         if (saga !== undefined) {
             this.saga = saga;
         }
-        if (price !== undefined && price > 0) {
+        if (price !== undefined) {
             this.price = price;
         }
     }

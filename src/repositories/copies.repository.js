@@ -1,60 +1,49 @@
-import fs from "fs/promises";
-import path from "path";
-import { fileURLToPath } from "url";
 import { Copy } from "../models/Copy.js";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const COPIES_FILE = path.join(__dirname, "../data/copies.json");
-
+import { pool } from "../config/config.js";
 export class CopyRepository {
     async findAll() {
-        const data = await fs.readFile(COPIES_FILE, "utf-8");
-        const copies = JSON.parse(data);
-        return copies.map(copy => new Copy(copy));
+        const result = await pool.query(`SELECT id, book_id AS "bookId", state_id AS "stateId", created_at AS "createdAt", 
+            updated_at AS "updatedAt" FROM copy`);
+        return result.rows.map(row => new Copy(row));
     }
 
     async findById(id) {
-        const copies = await this.findAll();
-        const copy = copies.find(copy => copy.id === id);
-        return copy;
+        const result = await pool.query(`SELECT id, book_id AS "bookId", state_id AS "stateId", created_at AS "createdAt", 
+            updated_at AS "updatedAt" FROM copy WHERE id = $1`, [id]);
+        return result.rows.length > 0 ? new Copy(result.rows[0]) : undefined;
     }
 
     async create(copy) {
-        const newCopy = new Copy(copy);
-        const copies = await this.findAll();
-        copies.unshift(newCopy);
-        await fs.writeFile(
-            COPIES_FILE,
-            JSON.stringify(copies, null, 2)
-        );
-        return newCopy;
+        const result = await pool.query(`INSERT INTO copy (book_id, state_id) VALUES ($1, $2)
+        RETURNING id, book_id AS "bookId", state_id AS "stateId", created_at AS "createdAt", updated_at AS "updatedAt";`,
+            [copy.bookId, copy.stateId]);
+        return new Copy(result.rows[0]);
     }
 
-    async getCopiesByBookId(bookId) {
-        return this.findAll().filter(copy => copy.bookId === bookId);
-    }
-
-    async deleteCopy(id) {
-        const copy = await this.findById(id);
-        if (!copy) {
-            throw new Error("Copy not found");
-        }
-        const copies = await this.findAll();
-        const updatedCopies = copies.filter(c => c.id !== id);
-        await fs.writeFile(COPIES_FILE, JSON.stringify(updatedCopies, null, 2));
-        return updatedCopies;
+    async findCopiesByBookId(bookId) {
+        const result = await pool.query(`SELECT id, book_id AS "bookId", state_id AS "stateId" created_at AS "createdAt", 
+            updated_at AS "uspdatedAt" FROM copy WHERE book_id = $1`, [bookId]);
+        return result.rows.map(row => new Copy(row));
     }
 
     async update(copy) {
-        const copies = await this.findAll();
-        const index = copies.findIndex(c => c.id === copy.id);
-        if (index === -1) {
+        const result = await pool.query(`
+        UPDATE copy SET book_id = $2, state_id = $3, updated_at = CURRENT_TIMESTAMP
+        WHERE id = $1 RETURNING id, book_id AS "bookId", state_id AS "stateId", created_at AS "createdAt", updated_at AS "updatedAt";`,
+            [copy.id, copy.bookId, copy.stateId]);
+        if (result.rows.length === 0) {
             throw new Error("Copy not found");
         }
-        copies[index] = copy;
-        await fs.writeFile(COPIES_FILE, JSON.stringify(copies, null, 2));
-        return copy;
+        return new Copy(result.rows[0]);
+    }
+
+    async delete(id) {
+        const result = await pool.query(`DELETE FROM copy WHERE id = $1
+            RETURNING id, book_id AS "bookId", state_id AS "stateId", created_at AS "createdAt", 
+            updated_at AS "updatedAt"`, [id]);
+        if (result.rows.length === 0) {
+            throw new Error("Copy not found");
+        }
+        return new Copy(result.rows[0]);
     }
 }
