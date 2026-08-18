@@ -41,15 +41,6 @@ export class BooksService {
         return this.bookRepository.create(book);
     }
 
-    //pendiente por copias de los libros
-    async deleteBook(id) {
-        const book = await this.bookRepository.findById(id);
-        if (!book) {
-            throw new Error("Book not found");
-        }
-        await this.bookRepository.delete(id);
-    }
-
     async updateBook(id, datos) {
         const book = await this.bookRepository.findById(id);
         if (!book) {
@@ -74,5 +65,14 @@ export class BooksService {
             }
         }
         return this.bookRepository.update(id, datos);
+    }
+
+    //pendiente por copias de los libros
+    async deleteBook(id) {
+        const book = await this.bookRepository.findById(id);
+        if (!book) {
+            throw new Error("Book not found");
+        }
+        await this.bookRepository.delete(id);
     }
 }

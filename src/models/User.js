@@ -1,29 +1,25 @@
 export class User {
-    constructor({ firstName, lastName, email, role, id}) {
+    constructor({ id, name, email, password, roleId, createdAt, updatedAt }) {
         this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.name = name;
         this.email = email;
-        this.role = role;
+        this.password = password;
+        this.roleId = roleId;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
-    update({ firstName, lastName, email }) {
-        if (firstName !== undefined) {
-            this.firstName = firstName;
+    update({ name, email, password }) {
+        if (name !== undefined) {
+            this.name = name;
         }
-        if (lastName !== undefined) {
-            this.lastName = lastName;
-        }
+
         if (email !== undefined) {
             this.email = email;
         }
-    }
 
-    changeRole(newRole) {
-        if (!Object.values(ROLES).includes(newRole)) {
-            return false;
+        if (password !== undefined) {
+            this.password = password;
         }
-        this.role = newRole;
-        return true;
     }
 }

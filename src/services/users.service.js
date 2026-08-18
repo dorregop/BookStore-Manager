@@ -7,7 +7,7 @@ export class UserService {
     }
 
     async getUsers() {
-        return await this.userRepository.findAll();
+        return this.userRepository.findAll();
     }
 
     async getUserById(id) {
@@ -38,30 +38,48 @@ export class UserService {
         if (!role) {
             throw new Error("Role not found");
         }
-        return await this.userRepository.create(user);
+        return this.userRepository.create(user);
     }
 
     async updateUser(id, userData) {
         if (!id) {
             throw new Error("User ID is required");
         }
+        if (!userData) {
+            throw new Error("User data is required");
+        }
         const existingUser = await this.userRepository.findById(id);
         if (!existingUser) {
             throw new Error("User not found");
         }
-        if (userData.roleId) {
+        if (userData.name !== undefined) {
+            if (userData.name.trim() === "") {
+                throw new Error("User name cannot be empty");
+            }
+        }
+        if (userData.email !== undefined) {
+            if (userData.email.trim() === "") {
+                throw new Error("User email cannot be empty");
+            }
+        }
+        if (userData.password !== undefined) {
+            if (userData.password.trim() === "") {
+                throw new Error("User password cannot be empty");
+            }
+        }
+        if (userData.roleId !== undefined) {
             const role = await this.roleRepository.findById(userData.roleId);
             if (!role) {
                 throw new Error("Role not found");
             }
         }
         const updatedData = {
-            name: userData.name || existingUser.name,
-            email: userData.email || existingUser.email,
-            password: userData.password || existingUser.password,
-            roleId: userData.roleId || existingUser.roleId
+            name: userData.name?.trim() ?? existingUser.name,
+            email: userData.email?.trim() ?? existingUser.email,
+            password: userData.password ?? existingUser.password,
+            roleId: userData.roleId ?? existingUser.roleId
         };
-        return await this.userRepository.update(id, updatedData);
+        return this.userRepository.update(id, updatedData);
     }
 
     async deleteUser(id) {

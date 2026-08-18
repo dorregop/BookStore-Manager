@@ -5,6 +5,7 @@ import bookRoutes from "./routes/books.routes.js"
 import copyRoutes from "./routes/copies.routes.js"
 import copyStateRoutes from "./routes/copystate.routes.js"
 import usersRoutes from "./routes/users.routes.js"
+import reservationStatusRoutes from "./routes/reservationstatus.routes.js"
 
 const app = express();
 
@@ -16,5 +17,6 @@ app.use("/api/books", bookRoutes);
 app.use("/api/copies", copyRoutes)
 app.use("/api/copyState", copyStateRoutes);
 app.use("/api/users", usersRoutes);
+app.use("/api/reservationStatus", reservationStatusRoutes);
 
 export default app;
